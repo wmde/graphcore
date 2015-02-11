@@ -411,8 +411,10 @@ struct SimpleFixedsizeAllocator
         void *allocate(size_t nblocks)
         {
             if(nblocks!=1)
-                dmsg("nblocks=%d\n", nblocks),
+            {
+                dmsg("nblocks=%d\n", nblocks);
                 throw verbose_bad_alloc("only single-block allocation supported");
+            }
             for(size_t i= 0; i<nChunks; i++)
                 if(chunks[i]->blocksLeft())
                     return chunks[i]->allocate(nblocks);
