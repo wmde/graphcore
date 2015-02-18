@@ -528,7 +528,10 @@ class singlepage_std_allocator: public std::allocator<T>
             //~ printf("allocate n=%zu sizeof(T)=%zu typeid(T)=%s\n", n, sizeof(T), typeid(T).name());
 
             if(n*sizeof(T)!=FixedsizeAllocator::BlockSize)
+            {
+                dmsg("singlepage_allocator::allocate(): n*sizeof(T)!=BlockSize (n=%d)\n", n);
                 return static_cast<T*>(::operator new(n*sizeof(T)));
+            }
             
             return (pointer)getAllocator().allocate(1);
         }
@@ -558,6 +561,7 @@ class singlepage_std_allocator: public std::allocator<T>
             
             if(n*sizeof(T)!=FixedsizeAllocator::BlockSize)
             {
+                dmsg("singlepage_allocator::deallocate(): n*sizeof(T)!=BlockSize (n=%d)\n", n);
                 ::operator delete(p);
                 return;
             }

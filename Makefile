@@ -9,6 +9,10 @@ ifeq ($(USE_MMAP_POOL),1)
 	CCFLAGS+=-DUSE_MMAP_POOL
 endif
 
+ifeq ($(DEBUG_COMMANDS),1)
+	CCFLAGS+=-DDEBUG_COMMANDS
+endif
+
 all: 		Release Debug
 
 Release:	graphcore
