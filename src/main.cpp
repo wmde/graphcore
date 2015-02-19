@@ -1054,12 +1054,33 @@ class ccMallocStats: public CliCommand_RTOther
 //            printf("Mmapped: %dM used: %dM (%d%%)\n",
 //                   gMmappedBytes/(1024*1024), gUsedBytes/(1024*1024), gUsedBytes/(gMmappedBytes/100));
 
+            cliSuccess("go figure: \n");
+            cout << lastStatusMessage;
+            
 #ifdef __linux__
+            int stderr_bak= dup(STDERR_FILENO);
+            dup2(STDOUT_FILENO, STDERR_FILENO);
             malloc_stats();
+            dup2(STDERR_FILENO, stderr_bak);
+            close(stderr_bak);
 #else
             printf("malloc_stats() not implemented.\n");
 #endif
-
+#ifdef USE_MMAP_POOL
+            printf("* mmap pool stats\n");
+            QuickFixedsizeAllocator& allocator= singlepage_std_allocator<BasicArc,QuickFixedsizeAllocator>::getAllocator();
+            printf("nChunks: %zu\n", allocator.nChunks);
+            for(unsigned i= 0; i<allocator.nChunks; ++i)
+            {
+                QuickBlockAllocator *ba= allocator.chunks[i];
+                printf("chunk %u:\n", i);
+                printf("    blocksLeft: %zd\n", ba->blocksLeft());
+                printf("    block address: 0x%018lX\n", (uintptr_t)ba->manager.address());
+            }
+#endif
+            printf("program break:     0x%018lX\n", (uintptr_t)sbrk(0));
+            
+            puts("");
             return CMD_SUCCESS;
         }
 };

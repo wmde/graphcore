@@ -385,7 +385,7 @@ class SubmipBlockAllocator: public SimpleBitmapBlockAllocator<CHUNKMANAGER>
             return -1;
         }
         
-        
+        friend class ccMallocStats;
 };
 
 
@@ -486,6 +486,7 @@ struct SimpleFixedsizeAllocator
             for(BLOCKALLOCATOR **dst= chunks+idx; dst<chunks+nChunks; dst++)
                 *dst= *(dst+1);
         }
+        friend class ccMallocStats;
 };
 
 enum { CHUNKSIZE= 64*1024*1024, MAX_ALLOC= size_t(2)*1024*1024*1024, MAXCHUNKS= MAX_ALLOC/CHUNKSIZE };
