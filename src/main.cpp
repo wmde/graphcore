@@ -1058,10 +1058,11 @@ class ccMallocStats: public CliCommand_RTOther
             cout << lastStatusMessage;
             
 #ifdef __linux__
+            fflush(stdout);
             int stderr_bak= dup(STDERR_FILENO);
             dup2(STDOUT_FILENO, STDERR_FILENO);
             malloc_stats();
-            dup2(STDERR_FILENO, stderr_bak);
+            dup2(stderr_bak, STDERR_FILENO);
             close(stderr_bak);
 #else
             printf("malloc_stats() not implemented.\n");
