@@ -112,7 +112,7 @@ class MmapChunkManager
         
         ~MmapChunkManager()
         {
-            if(::munmap(mapping, BLOCKSIZE)<0)
+            if(::munmap(mapping, CHUNKSIZE)<0)
             {
                 perror("mmap");
                 throw verbose_bad_alloc("munmap failed");
