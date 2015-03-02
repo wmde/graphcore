@@ -319,10 +319,10 @@ template<typename arc=BasicArc> class Digraph
         };
 
         // breadth-first search
-        // walk search tree until COMPARE()(node, compArg) returns true
+        // walk search tree until compare(node) returns true
         // returns the node that matched, or 0
-        template<typename COMPARE>
-            uint32_t doBFS2(uint32_t startNode, uint32_t compArg, uint32_t depth,
+        template<typename VISITOR>
+            uint32_t doBFS2(uint32_t startNode, VISITOR visitor, uint32_t depth,
                             deque<uint32_t> &resultNodes,
                             map<uint32_t,BFSnode> &nodeInfo,
                             NodeRelation searchType= PREDECESSORS)
@@ -330,7 +330,7 @@ template<typename arc=BasicArc> class Digraph
             NeighborIterator it(*this);
             it.startNeighbors(startNode);
             if(it.finished()) return 0;	// node does not exist
-            if(COMPARE()(*this, startNode, compArg)) return startNode;  // empty path
+            if(visitor(startNode)) return startNode;  // empty path
             queue<uint32_t> Q;
             resultNodes.push_back(startNode);
             nodeInfo[startNode]= BFSnode(0, 0);
@@ -351,7 +351,7 @@ template<typename arc=BasicArc> class Digraph
                         // insert this node
                         resultNodes.push_back(neighbor);
                         nodeInfo[neighbor]= BFSnode(curNiveau+1, nextNode);
-                        if(COMPARE()(*this, neighbor, compArg)) return neighbor;
+                        if(visitor(neighbor)) return neighbor;
                     }
                 }
             }
@@ -445,17 +445,21 @@ template<typename arc=BasicArc> class Digraph
         // comparison operators for search function
         struct findNode
         {
-            bool operator() (Digraph &graph, uint32_t node, uint32_t compArg)
-            { return node==compArg; }
+            uint32_t compNode;
+            findNode(uint32_t compNode_): compNode(compNode_) {}
+            bool operator() (uint32_t node)
+            { return node==compNode; }
         };
         struct findRoot
         {
-            bool operator() (Digraph &graph, uint32_t node, uint32_t compArg)
+            Digraph &graph;
+            findRoot(Digraph &graph_): graph(graph_) {}
+            bool operator() (uint32_t node)
             { return !graph.hasPredecessor(node); }
         };
         struct findAll
         {
-            bool operator() (Digraph &graph, uint32_t node, uint32_t compArg)
+            bool operator() (uint32_t node)
             { return false; }
         };
 
@@ -705,7 +709,7 @@ template<typename arc=BasicArc> class Digraph
             // find old neighbors for building diff
             deque<uint32_t> oldNeighbors;
             map<uint32_t,BFSnode> nodeInfo;
-            doBFS2<findAll> (node, 0, 1, oldNeighbors, nodeInfo, (successors? DESCENDANTS: PREDECESSORS));
+            doBFS2<findAll> (node, findAll(), 1, oldNeighbors, nodeInfo, (successors? DESCENDANTS: PREDECESSORS));
             //~ if(oldNeighbors.size()) oldNeighbors.erase(oldNeighbors.begin());   // remove the node itself.
             //~ dprint("oldNeighbors[0]: %d\n", oldNeighbors[0]);
             stable_sort(oldNeighbors.begin(), oldNeighbors.end());

@@ -355,7 +355,7 @@ class CoreCli: public Cli
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ccListNeighbors
-// template class for list-* commands
+// template class for list-* and traverse-* commands
 template<BDigraph::NodeRelation searchType, bool recursive>
     class ccListNeighbors: public CliCommand_RTNodeList
 {
@@ -388,8 +388,7 @@ template<BDigraph::NodeRelation searchType, bool recursive>
             }
             double d= getTime();
             map<uint32_t,BDigraph::BFSnode> nodeInfo;
-            graph->doBFS2<BDigraph::findAll> (Cli::parseUint(words[1]), 0, (recursive? Cli::parseUint(words[2]): 1),
-                                             result, nodeInfo, searchType);
+            graph->doBFS2(Cli::parseUint(words[1]), BDigraph::findAll(), (recursive? Cli::parseUint(words[2]): 1), result, nodeInfo, searchType);
             if(!recursive && result.size()) result.erase(result.begin());
             if(recursive && !result.size())
             {
@@ -441,8 +440,7 @@ template<BDigraph::NodeRelation searchType, bool recursive>
             double d= getTime();
             deque<uint32_t> result;
             map<uint32_t,BDigraph::BFSnode> nodeInfo;
-            graph->doBFS2<BDigraph::findAll> (Cli::parseUint(words[1]), 0, (recursive? Cli::parseUint(words[2]): 1),
-                                             result, nodeInfo, searchType);
+            graph->doBFS2(Cli::parseUint(words[1]), BDigraph::findAll(), (recursive? Cli::parseUint(words[2]): 1), result, nodeInfo, searchType);
             if(!recursive && result.size()) result.erase(result.begin());
             if(recursive && !result.size())
             {
@@ -864,11 +862,9 @@ template<bool findRoot> class ccFindPath: public CliCommand_RTArcList
             uint32_t node;
 
             if(findRoot)
-                node= graph->doBFS2<BDigraph::findRoot> (Cli::parseUint(words[1]), 0, U32MAX,
-                                                        nodes, nodeInfo);
+                node= graph->doBFS2(Cli::parseUint(words[1]), BDigraph::findRoot(*graph), U32MAX, nodes, nodeInfo);
             else
-                node= graph->doBFS2<BDigraph::findNode> (Cli::parseUint(words[2]), Cli::parseUint(words[1]), U32MAX,
-                                                        nodes, nodeInfo);
+                node= graph->doBFS2(Cli::parseUint(words[2]), BDigraph::findNode(Cli::parseUint(words[1])), U32MAX, nodes, nodeInfo);
             if(node)
             {
                 uint32_t next;
