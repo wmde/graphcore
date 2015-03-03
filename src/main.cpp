@@ -360,7 +360,7 @@ template<BDigraph::NodeRelation searchType, bool recursive>
     class ccListNeighbors: public CliCommand_RTNodeList
 {
     public:
-        string getSynopsis()        { return getName() + _(" NODE") + (recursive? _(" DEPTH"): ""); }
+        string getSynopsis()        { return getName() + _(" NODE") + (recursive? _(" DEPTH"): "") + _(" [MAXRESULTS]"); }
         string getHelpText()
         {
             if(recursive) switch(searchType)
@@ -380,15 +380,26 @@ template<BDigraph::NodeRelation searchType, bool recursive>
         CommandStatus execute(vector<string> words, CoreCli *cli, BDigraph *graph, bool hasDataSet, FILE *inFile, FILE *outFile,
                      deque<uint32_t> &result)
         {
-            if( (words.size()!=(recursive? 3: 2)) || hasDataSet ||
-                !Cli::isValidNodeID(words[1]) || (recursive && !Cli::isValidUint(words[2])) )
+            if( (recursive && !(words.size()==4||words.size()==3)) || (!recursive && !(words.size()==3||words.size()==2)) ||
+                hasDataSet ||
+                !Cli::isValidNodeID(words[1]) || 
+                (recursive && !Cli::isValidUint(words[2])) )
             {
                 syntaxError();
                 return CMD_FAILURE;
             }
             double d= getTime();
             map<uint32_t,BDigraph::BFSnode> nodeInfo;
-            graph->doBFS2(Cli::parseUint(words[1]), BDigraph::findAll(), (recursive? Cli::parseUint(words[2]): 1), result, nodeInfo, searchType);
+            if(words.size()==4 || (!recursive && words.size()==3))
+            {
+                // MAXRESULTS given
+                dmsg("maxresults: %s\n", words.back().c_str());
+                graph->doBFS2(Cli::parseUint(words[1]), BDigraph::findAll_Limited(Cli::parseUint(words.back())), (recursive? Cli::parseUint(words[2]): 1), result, nodeInfo, searchType);
+            }
+            else
+            {   // no limit
+                graph->doBFS2(Cli::parseUint(words[1]), BDigraph::findAll(), (recursive? Cli::parseUint(words[2]): 1), result, nodeInfo, searchType);
+            }
             if(!recursive && result.size()) result.erase(result.begin());
             if(recursive && !result.size())
             {

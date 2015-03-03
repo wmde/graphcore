@@ -462,6 +462,17 @@ template<typename arc=BasicArc> class Digraph
             bool operator() (uint32_t node)
             { return false; }
         };
+        struct findAll_Limited
+        {
+            unsigned resultCountdown;
+            findAll_Limited(unsigned maxresults): resultCountdown(maxresults) {}
+            bool operator() (uint32_t node)
+            {
+                if( ! --resultCountdown )
+                    return true;
+                return false;
+            }
+        };
 
 
         // find all roots/leaves in this graph
