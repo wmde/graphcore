@@ -11,6 +11,9 @@ commands:
 	- traverse-predecessors_
 	- traverse-successors_
 	- traverse-neighbors_
+	- traverse-predecessors-withdepth_
+	- traverse-successors-withdepth_
+	- traverse-neighbors-withdepth_
 	- list-predecessors_
 	- list-successors_
 	- find-path_
@@ -18,6 +21,11 @@ commands:
 	- list-roots_
 	- list-leaves_
 	- stats_
+	- list-by-tail_
+	- list-by-head_
+	- add-stuff_
+	- rm-stuff_
+	- malloc-stats_
 	- clear_
 	- shutdown_
 	- quit_
@@ -26,6 +34,9 @@ commands:
 	- get-meta_
 	- remove-meta_
 	- list-meta_
+	- dump-graph_
+	- load-graph_
+	- find-cycles_
 
 .. _help:
 
@@ -92,7 +103,7 @@ traverse-predecessors
 ::
 
 
-	syntax: traverse-predecessors NODE DEPTH
+	syntax: traverse-predecessors NODE DEPTH [MAXRESULTS]
 	list NODE and its predecessors recursively up to DEPTH.
 
 .. _traverse-successors:
@@ -103,7 +114,7 @@ traverse-successors
 ::
 
 
-	syntax: traverse-successors NODE DEPTH
+	syntax: traverse-successors NODE DEPTH [MAXRESULTS]
 	list NODE and its successors recursively up to DEPTH.
 
 .. _traverse-neighbors:
@@ -114,7 +125,40 @@ traverse-neighbors
 ::
 
 
-	syntax: traverse-neighbors NODE DEPTH
+	syntax: traverse-neighbors NODE DEPTH [MAXRESULTS]
+	list NODE and its neighbors recursively up to DEPTH.
+
+.. _traverse-predecessors-withdepth:
+
+traverse-predecessors-withdepth
+
+
+::
+
+
+	syntax: traverse-predecessors-withdepth NODE DEPTH
+	list NODE and its predecessors recursively up to DEPTH.
+
+.. _traverse-successors-withdepth:
+
+traverse-successors-withdepth
+
+
+::
+
+
+	syntax: traverse-successors-withdepth NODE DEPTH
+	list NODE and its successors recursively up to DEPTH.
+
+.. _traverse-neighbors-withdepth:
+
+traverse-neighbors-withdepth
+
+
+::
+
+
+	syntax: traverse-neighbors-withdepth NODE DEPTH
 	list NODE and its neighbors recursively up to DEPTH.
 
 .. _list-predecessors:
@@ -125,7 +169,7 @@ list-predecessors
 ::
 
 
-	syntax: list-predecessors NODE
+	syntax: list-predecessors NODE [MAXRESULTS]
 	list direct predecessors of NODE.
 
 .. _list-successors:
@@ -136,7 +180,7 @@ list-successors
 ::
 
 
-	syntax: list-successors NODE
+	syntax: list-successors NODE [MAXRESULTS]
 	list direct successors of NODE.
 
 .. _find-path:
@@ -193,13 +237,72 @@ stats
 
 	syntax: stats
 	print some statistics about the graph in the form of a name,value data set.
+	when called as 'stats q', returns only values which can be gathered quickly (eg no avg neighbor count).
 	names and their meanings:
 	ArcCount	number of arcs
-	ArcRamKiB	total RAM consumed by arc data, in KiB
+	AvgPredecessors	average predecessors per node
+	AvgSuccessors	average successors per node
 	DataInvalid	nonzero if any obvious errors were found in graph data
 	MaxNodeID	greatest node ID
 	MinNodeID	lowest node ID
 	NumDups	number of duplicates found (must be zero)
+	ProcRSS	process resident set size in bytes
+	ProcVirt	process virt size in bytes
+
+.. _list-by-tail:
+
+list-by-tail
+
+
+::
+
+
+	syntax: list-by-tail INDEX [N]
+	debugging: list N arcs starting from INDEX, sorted by tail
+
+.. _list-by-head:
+
+list-by-head
+
+
+::
+
+
+	syntax: list-by-head INDEX [N]
+	debugging: list N arcs starting from INDEX, sorted by head
+
+.. _add-stuff:
+
+add-stuff
+
+
+::
+
+
+	syntax: add-stuff NUM [MOD=RAND_MAX]
+	debugging: add NUM random arcs with tail,head in range 1..MOD directly to the graph
+
+.. _rm-stuff:
+
+rm-stuff
+
+
+::
+
+
+	syntax: rm-stuff NUM
+	debugging: remove NUM random arcs directly from the graph
+
+.. _malloc-stats:
+
+malloc-stats
+
+
+::
+
+
+	syntax: malloc-stats
+	debugging
 
 .. _clear:
 
@@ -290,4 +393,38 @@ list-meta
 
 	syntax: list-meta
 	list all variables in this graph.
+
+.. _dump-graph:
+
+dump-graph
+
+
+::
+
+
+	syntax: dump-graph FILENAME
+	save the graph to a file.
+
+.. _load-graph:
+
+load-graph
+
+
+::
+
+
+	syntax: load-graph FILENAME
+	load graph from a dump file.
+
+.. _find-cycles:
+
+find-cycles
+
+
+::
+
+
+	syntax: find-cycles NODE DEPTH
+	find cycles in subgraph by traversing successors of NODE with max depth DEPTH.
+	cycle paths are separated by arcs with invalid node IDs: 4294967295,4294967295.
 
