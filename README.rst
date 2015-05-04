@@ -21,11 +21,6 @@ commands:
 	- list-roots_
 	- list-leaves_
 	- stats_
-	- list-by-tail_
-	- list-by-head_
-	- add-stuff_
-	- rm-stuff_
-	- malloc-stats_
 	- clear_
 	- shutdown_
 	- quit_
@@ -247,61 +242,6 @@ stats
 	NumDups	number of duplicates found (must be zero)
 	ProcRSS	process resident set size in bytes
 	ProcVirt	process virt size in bytes
-
-.. _list-by-tail:
-
-list-by-tail
-
-
-::
-
-
-	syntax: list-by-tail INDEX [N]
-	debugging: list N arcs starting from INDEX, sorted by tail
-
-.. _list-by-head:
-
-list-by-head
-
-
-::
-
-
-	syntax: list-by-head INDEX [N]
-	debugging: list N arcs starting from INDEX, sorted by head
-
-.. _add-stuff:
-
-add-stuff
-
-
-::
-
-
-	syntax: add-stuff NUM [MOD=RAND_MAX]
-	debugging: add NUM random arcs with tail,head in range 1..MOD directly to the graph
-
-.. _rm-stuff:
-
-rm-stuff
-
-
-::
-
-
-	syntax: rm-stuff NUM
-	debugging: remove NUM random arcs directly from the graph
-
-.. _malloc-stats:
-
-malloc-stats
-
-
-::
-
-
-	syntax: malloc-stats
-	debugging
 
 .. _clear:
 
