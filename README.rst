@@ -238,7 +238,6 @@ stats
 	syntax: stats
 	print some statistics about the graph in the form of a name,value data set.
 	when called as 'stats q', returns only values which can be gathered quickly (eg no avg neighbor count).
-	names and their meanings:
 	ArcCount	number of arcs
 	AvgPredecessors	average predecessors per node
 	AvgSuccessors	average successors per node
@@ -324,7 +323,7 @@ shutdown
 
 
 	syntax: shutdown
-	shutdown the graph processor.
+	shutdown graphcore.
 
 .. _quit:
 
@@ -335,7 +334,7 @@ quit
 
 
 	syntax: quit
-	shutdown the graph processor.
+	shutdown graphcore.
 
 .. _protocol-version:
 

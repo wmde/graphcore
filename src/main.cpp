@@ -597,8 +597,7 @@ class ccStats: public CliCommand_RTOther
         string getHelpText()
         {
             string s= string(_("print some statistics about the graph in the form of a name,value data set.\n")) +
-                      "# " + _("when called as 'stats q', returns only values which can be gathered quickly (eg no avg neighbor count).\n") +
-                      "# " + _("names and their meanings:");
+                      "# " + _("when called as 'stats q', returns only values which can be gathered quickly (eg no avg neighbor count).\n");
             BDigraph graph;
             map<string, BDigraph::statInfo> info;
             graph.getStats(info);
@@ -827,7 +826,7 @@ class ccShutdown: public CliCommand_RTVoid
 {
     public:
         string getSynopsis()        { return getName(); }
-        string getHelpText()        { return _("shutdown the graph processor."); }
+        string getHelpText()        { return _("shutdown graphcore."); }
 
         CommandStatus execute(vector<string> words, CoreCli *cli, BDigraph *graph, bool hasDataSet, FILE *inFile)
         {
