@@ -1,9 +1,12 @@
 GraphCore
 ============================================
 
-Issue tracker: please file bugs and feature requests on `Phabricator <https://phabricator.wikimedia.org/maniphest/task/create/?projects=tcb-team,catgraph&title=%5BCatGraph%5D>`_.
+Issue tracker
+=============
+Please file bugs and feature requests on `Phabricator <https://phabricator.wikimedia.org/maniphest/task/create/?projects=tcb-team,catgraph&title=%5BCatGraph%5D>`_.
 
-Documentation:
+Documentation
+=============
 
 commands:
 
